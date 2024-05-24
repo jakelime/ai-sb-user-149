@@ -28,7 +28,7 @@ for humans to interface with the tool and/or understand the input/output require
 
 ## Overview
 
- Insert image here
+ ![MRO Shop scheduling](docs/images/project_overview.png?raw=true "MRO Shop scheduling")
 
 ## Details
 
