@@ -10,7 +10,8 @@
 **In a MRO shop, it is a *Low volume, High mix environment***
 
 - Planning for a MRO job is very tedious due to the dynamic nature, every
-  engine is different - some are subjected to mild conditions, others are subjected to very harsh conditions (more internal damage)
+  engine is different - some are subjected to mild conditions, others are
+  subjected to harsh conditions (more internal damage)
 - A typical repair job consist of these processes - Strip, Repair, Build
 - Resources are constraints. Typical resources are manpower, spare parts,
   machine availbility.
@@ -32,7 +33,7 @@ for humans to interface with the tool and/or understand the input/output require
 
 ## Desired output
 
-We would expect the PPCS to be able to generate a schedule, which is basically a
+We would expect the PPCS to be able to generate schedules, which is basically a
 `output_table` that looks like this:
 
 |lo_id     |emp_id    |process_code                                |timestamp_in  |timestamp_out |
@@ -57,11 +58,11 @@ We would expect the PPCS to be able to generate a schedule, which is basically a
 |j000000001|st00000042|core_major_module-gate030-CUCAAA-hsgrnd     |5/31/08 8:00  |5/31/08 15:41 |
 |j000000001|st00000072|fan_major_module-gate010-CUAXAA-inspt       |8/23/07 16:15 |8/23/07 18:28 |
 
-A process/task would be assigned to a particular `machine` and `man` required the get the job done.
+A process/task would be assigned to `machine` and `man` required the get the job done.
 
 ### Visualization
 
-To visualze the table, we can make use a `gantt chart`.
+To visualize, we can make use of a `gantt chart`.
 
 Chart by job tasks:
 
@@ -72,7 +73,7 @@ Chart by manpower:
  ![Manpower assignment chart](docs/images/gantt-by_man.png?raw=true "Gantt chart of Manpower")
 
 From the `manpower chart` above, we can see that there are opportunities to optimize manpower
-better (gaps between the assigned tasks).
+better - by filling up the gaps between the assigned tasks.
 
 ## Details
 
