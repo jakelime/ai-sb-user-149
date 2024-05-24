@@ -1,5 +1,28 @@
 # Production and Planning Control System
 
+## Quickstart
+
+If you are working inside `GCP workbench`, then the github SSH connector has
+already been set up for you.
+
+```shell
+# Run these commands in terminal (jupyter terminal, or from console, or from cells with '!')
+git clone git@github.com:jakelime/ai-sb-user-149.git # to clone from the actual repository
+git ac "my commit message" # this command will add all, and commit
+git push origin main # this will push your updates to the repo
+git fetch # to sync with online repo
+git pull # to pull down the latest changes
+```
+
+If you want to work using your own private environment, and understood how SSH
+keys to github work already, then do these steps.
+
+1. Use SSH to connect git repos, using your own account
+1. Get collaborator invite from Jake, to your own account
+1. `git clone git@github.com:jakelime/ai-sb-user-149.git`
+1. `git add . && git commit -m 'my message'`
+1. `git push`
+
 ## Objectives
 
 ### Main Goals
@@ -15,7 +38,6 @@
 - A typical repair job consist of these processes - Strip, Repair, Build
 - Resources are constraints. Typical resources are manpower, spare parts,
   machine availbility.
-
 
 ### The General Idea
 
