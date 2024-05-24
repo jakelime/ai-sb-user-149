@@ -2,7 +2,7 @@
 
 ## Objectives
 
-### Main Goal
+### Main Goals
 
 - To develop a production planning and operations control system
 - To design the system with great user experience, smart planning with AI
@@ -26,13 +26,102 @@ for humans to interface with the tool and/or understand the input/output require
 - To leverage AI technology, such as LLM to serve as a interface from human
   to the optimizer, such that the human can dynamically adjust planned schedules.
 
-## Overview
+## Design Overview
 
  ![MRO Shop scheduling](docs/images/project_overview.png?raw=true "MRO Shop scheduling")
 
+## Desired output
+
+We would expect the PPCS to be able to generate a schedule, which is basically a
+`output_table` that looks like this:
+
+|lo_id     |emp_id    |process_code                                |timestamp_in  |timestamp_out |
+|----------|----------|--------------------------------------------|--------------|--------------|
+|j000000001|st00000001|lpt_major_module-gate010-CUCEAA-binsp       |8/17/07 13:15 |8/17/07 17:19 |
+|j000000001|st00000003|lpt_major_module-gate010-CUCEAA-clean       |8/25/07 8:00  |8/25/07 17:30 |
+|j000000001|st00000004|lpt_major_module-gate010-CUCEAA-ndtest      |9/15/07 8:00  |9/15/07 21:00 |
+|j000000001|st00000007|accessory_drive_module-gate010-CUCKAA-binsp |8/19/07 13:15 |8/19/07 17:47 |
+|j000000001|st00000007|accessory_drive_module-gate030-CUCKAA-sbassm|1/30/08 8:52  |1/30/08 17:12 |
+|j000000001|st00000017|engine_major-gate010-CUAAAD-binsp           |8/23/07 10:23 |8/23/07 17:30 |
+|j000000001|st00000002|engine_major-gate010-CUAAAD-binsp           |8/20/07 8:00  |8/20/07 17:00 |
+|j000000001|st00000007|fan_major_module-gate010-CUCJAA-binsp       |8/19/07 8:00  |8/19/07 13:18 |
+|j000000001|st00000007|fan_major_module-gate030-CUCJAA-sbassm      |8/22/07 8:49  |8/22/07 17:45 |
+|j000000001|st00000024|core_major_module-gate010-CUCBAA-binsp      |8/19/07 8:00  |8/19/07 21:00 |
+|j000000001|st00000023|core_major_module-gate010-CUCBAA-clean      |8/21/07 8:00  |8/21/07 17:00 |
+|j000000001|st00000050|others-gate022-CTAAAA-eiclean               |9/11/07 11:27 |9/11/07 17:00 |
+|j000000001|st00000053|others-gate022-CVAAAA-eiinsp                |7/12/08 13:25 |7/12/08 15:42 |
+|j000000001|st00000050|others-gate022-CVAAAA-eirepr                |9/13/07 10:21 |9/13/07 11:12 |
+|j000000001|st00000059|core_major_module-gate022-CUBPAA-eatest     |9/15/07 8:00  |9/15/07 11:34 |
+|j000000001|st00000059|core_major_module-gate022-CUBPAA-eatest     |9/14/07 8:00  |9/14/07 18:05 |
+|j000000001|st00000069|engine_major-gate030-CUAAAA-enassm          |12/16/07 17:01|12/16/07 20:00|
+|j000000001|st00000042|core_major_module-gate030-CUCAAA-hsgrnd     |5/31/08 8:00  |5/31/08 15:41 |
+|j000000001|st00000072|fan_major_module-gate010-CUAXAA-inspt       |8/23/07 16:15 |8/23/07 18:28 |
+
+A process/task would be assigned to a particular `machine` and `man` required the get the job done.
+
+### Visualization
+
+To visualze the table, we can make use a `gantt chart`.
+
+Chart by job tasks:
+
+ ![Gantt chart of a Job](docs/images/gantt-by_job_tasks.png?raw=true "Gantt chart of a Job")
+
+Chart by manpower:
+
+ ![Manpower assignment chart](docs/images/gantt-by_man.png?raw=true "Gantt chart of Manpower")
+
+From the `manpower chart` above, we can see that there are opportunities to optimize manpower
+better (gaps between the assigned tasks).
+
 ## Details
 
+### Shopfloor
+
+Each `process` (also known as `task`) can be done only using specific machines, only using
+specific manpower trained for the task.
+
+Given a `process_code`, use `db_shopfloor table` to map the required shopfloor resources.
+
+|process_code|manhour_required_mean|machine_ids                                 |
+|------------|---------------------|--------------------------------------------|
+|accessory_drive_module-gate010-CUCKAA-binsp|9.157281746031746    |BSBAY01; BSBAY02; BSBAY03; BSBAY04          |
+|core_major_module-gate010-CUBFAA-binsp|11.437521367521366   |BSBAY01; BSBAY02; BSBAY03; BSBAY04          |
+|core_major_module-gate021-CUBGAA-rprpntg|10.680277777777777   |PLSMBAY01; PLSMBAY02; PLSMBAY03; PLSMBAY04; PLSMBAY05; PLSMBAY06|
+|fan_major_module-gate021-CUAVAA-rprndt|10.950444444444445   |DARKRM01; DARKRM02; DARKRM03; DARKRM04; DARKRM05; DARKRM06; DARKRM07|
+|fan_major_module-gate021-CUAVAA-rprsmtl|107.96520833333334   |RPRCELL01; RPRCELL02; RPRCELL03; RPRCELL04; RPRCELL05; RPRCELL06; RPRCELL07; RPRCELL08|
+|fan_major_module-gate021-CUAVAA-rprpltg|21.072314814814813   |ELECTNK01; ELECTNK02; ELECTNK03; ELECTNK04; ELECTNK05|
+|others-gate021-CUAJAA-rprweld|196.58774074074074   |RPRCELL01; RPRCELL02; RPRCELL03; RPRCELL04; RPRCELL05; RPRCELL06; RPRCELL07; RPRCELL08|
+|others-gate022-CXAAAA-eaclean|10.1103125           |CLNTK01; CLNTK02; CLNTK03; CLNTK04; CLNTK05 |
+
 ### Manpower
+
+#### Manpower to shift and skills table
+
+Given a `process_code`, use `db_manpower table` to map the workers capable of performing the task.
+
+|emp_id    |workshift |process_code                                |
+|----------|----------|--------------------------------------------|
+|st00000042|NORM      |core_major_module-gate030-CUCAAA-balnc;engine_major-gate030-CUAAAA-balnc;core_major_module-gate030-CUCAAA-hsgrnd;core_major_module-gate030-CUBFAA-hsgrnd|
+|st00000099|NORM      |accessory_drive_module-gate021-CUCLAA-rprmach;accessory_drive_module-gate021-CUCLAA-rprsmtl;lpt_major_module-gate021-CUCDAA-rprwtjt|
+|st00000070|NORM      |core_major_module-gate021-CUBQAA-rprinsp;others-gate021-CUAJAA-rprinsp;accessory_drive_module-gate021-CUCKAA-rprinsp|
+|st00000087|NORM      |fan_major_module-gate021-CUAXAA-rprcln;fan_major_module-gate021-CUAXAA-rprsurft;fan_major_module-gate021-CUCJAA-rprmach|
+|st00000101|NORM      |lpt_major_module-gate021-CUCEAA-rprmach;engine_major-gate021-CUAAAA-rprplsm;fan_major_module-gate999-CUAXAA-suppt|
+|st00000015|DS        |core_major_module-gate010-CUBGAA-ndtest;fan_major_module-gate010-CUAXAA-ndtest;lpt_major_module-gate021-CUCEAA-rprndt;core_major_module-gate021-CUBPAA-rprndt;others-gate022-CUAJAA-eaclean;others-gate021-DBAAAA-rprndt|
+|st00000024|DS        |core_major_module-gate010-CUCBAA-binsp;core_major_module-gate010-CUBFAA-binsp;core_major_module-gate010-CUBPAA-binsp;core_major_module-gate010-CUBFAA-utstrip;core_major_module-gate010-CUCBAA-utstrip|
+|st00000060|DS        |engine_major-gate030-CUAAAA-entest;engine_major-gate030-CUAAAA-testderg|
+|st00000120|DS        |core_major_module-gate030-CUBFAA-sbassm     |
+|st00000104|DS        |fan_major_module-gate021-CUAXAA-rprweld     |
+|st00000098|NS        |core_major_module-gate021-CUBGAA-rprmach;core_major_module-gate021-CUCBAA-rprplsm;core_major_module-gate021-CUBPAA-rprplsm;lpt_major_module-gate021-CUCDAA-rprplsm|
+|st00000108|NS        |lpt_major_module-gate021-CUCCAA-rprplsm;fan_major_module-gate021-CUAWAA-rprplsm|
+|st00000112|NS        |core_major_module-gate021-CUCAAA-rprplsm;lpt_major_module-gate021-CUCEAA-rprplsm|
+|st00000091|NS        |core_major_module-gate021-CUBPAA-rprpntg;engine_major-gate021-CUAAAA-rprpntg|
+|st00000085|NS        |core_major_module-gate021-CUCBAA-rprmach;core_major_module-gate021-CUBHAA-rprmach|
+|st00000106|NS        |others-gate021-CSAAAA-rprpntg;core_major_module-gate021-CUBGAA-rprpntg|
+
+The `process_code` column lists all the capable skill of that worker, separated by `;`.
+
+#### Shift table
 
 The company employ a 3-shift system, which can be obtained in the `shift_table`.
 
