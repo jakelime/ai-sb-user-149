@@ -16,6 +16,7 @@
 - Resources are constraints. Typical resources are manpower, spare parts,
   machine availbility.
 
+
 ### The General Idea
 
 - To use GCP `OR-Tools` such as the optimizer to determine the best
