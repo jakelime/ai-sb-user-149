@@ -1,6 +1,15 @@
 # Created by https://www.toptal.com/developers/gitignore/api/linux,python,jupyternotebooks,microsoftoffice
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,python,jupyternotebooks,microsoftoffice
 
+# Project ignore files
+tempdir/
+
+# Google cloud secrets
+token.json
+credentials.json
+client_secret_*.apps.googleusercontent.com.json
+ai-sandbox-company-*.json
+
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
