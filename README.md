@@ -2,31 +2,40 @@
 
 ## Quickstart
 
-If you are working inside `GCP workbench`, then the github SSH connector has
-already been set up for you.
+Basic instructions:
+
+1. `clone` the repo from Github
+1. Authenticate using `gcloud`
+1. Run in `vscode` or your favorite IDE
+
+### Git commands
+
+I have already set up the connection to github using SSH.
+If you are working on the `ppcs` instance from GCP `workbench`, then
+you can just run these commands.
 
 ```shell
-# Run these commands in terminal (jupyter terminal, or from console, or from cells with '!')
 git clone git@github.com:jakelime/ai-sb-user-149.git # to clone from the actual repository
-git ac "my commit message" # this command will add all, and commit
-git push origin main # this will push your updates to the repo
+git ac "my commit message" # git alias to  'add -A' && and 'commit -m '
+git push origin main # push to github repo
 git fetch # to sync with online repo
-git pull # to pull down the latest changes
+git pull # to pull in the latest changes
 ```
 
-If you want to work using your own private environment, and understood how SSH
-keys to github work already, then do these steps.
+If you want to work using your own private environment:
 
-1. Use SSH to connect git repos, using your own account
-1. Get collaborator invite from Jake, to your own account
+1. Use SSH to connect git repos
+1. Get collaborator invite from Jake
 1. `git clone git@github.com:jakelime/ai-sb-user-149.git`
 1. `git add . && git commit -m 'my message'`
-1. `git push`
+1. `git push` (only works if you are a colloborator)
 
+### CLI tool *gcloud*
 
-## Get Google working on your local environment
-
-
+1. Install: `gcloud` from <https://cloud.google.com/sdk/docs/install>
+1. Initialize: `gcloud init`
+1. Login: `gcloud auth application-default login`
+1. Run the project in vscode: `code .`
 
 ## Objectives
 
