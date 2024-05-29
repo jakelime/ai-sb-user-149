@@ -194,3 +194,9 @@ If the worker is required to work on rest day,
 ---------------------------|----------------------------------------------------|--------------------------------------------------------|--------------------------------------------
  At the employer’s request | 1 day’s salary                                     | 2 days’ salary                                         | 2 days’ salary \+ overtime pay
  At the employee’s request | Half day’s salary                                  | 1 day’s salary                                         | 1 day’s salary \+ overtime pay
+
+## References
+
+- [`gcloud auth login`](https://cloud.google.com/sdk/gcloud/reference/auth/login)
+- `ortools` - [Employee Scheduling](https://developers.google.com/optimization/scheduling/employee_scheduling)
+- `ortools` - [Job shop problem](https://developers.google.com/optimization/scheduling/job_shop)
