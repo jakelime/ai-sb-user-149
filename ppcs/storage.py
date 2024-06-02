@@ -39,10 +39,10 @@ class DatabaseManager:
         bucket_name: str = "ppcs-datastore",
         db_manpower: str = "gs://ppcs-datastore/db/db-manpower.csv",
         db_shopfloor: str = "gs://ppcs-datastore/db/db-shopfloor.csv",
+        db_workshift: str = "gs://ppcs-datastore/db/db-workshift.csv",
         live_schedule_foldername: str = "live_schedule",
         input_jobs: str = "gs://ppcs-datastore/input_files/data_input-job_delivery_dates.csv",
         input_workscope: str = "gs://ppcs-datastore/input_files/data_input-jobs_workscope.csv",
-        shift_table: str = "gs://ppcs-datastore/db/shift_table.csv",
     ):
         self.bucket_name = bucket_name
         self.db_manpower = db_manpower
@@ -50,7 +50,7 @@ class DatabaseManager:
         self.live_schedule_foldername = live_schedule_foldername
         self.input_jobs = input_jobs
         self.input_workscope = input_workscope
-        self.shift_table = shift_table
+        self.db_workshift = db_workshift
         self.storage_client = storage.Client(project_name)
         self.bucket = self.storage_client.get_bucket(bucket_name)
 
@@ -64,7 +64,7 @@ class DatabaseManager:
         return self.get_dataframe(self.db_manpower)
 
     def get_shift_table(self) -> pd.DataFrame:
-        return self.get_dataframe(self.shift_table)
+        return self.get_dataframe(self.db_workshift)
 
     def get_df_liveschedule(self) -> pd.DataFrame:
         """
