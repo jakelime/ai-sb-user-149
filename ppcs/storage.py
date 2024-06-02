@@ -1,4 +1,6 @@
+import os
 import shutil
+import tempfile
 from io import BytesIO
 from pathlib import Path
 
@@ -98,10 +100,33 @@ class DatabaseManager:
         blob.upload_from_filename(src_filename)
         logger.info(f"file {src_filename} uploaded to {dst_filename}.")
 
+    def update_bucket(
+        self, src_fpath: Path, bucket_add_str: str = "db/db-manpower.csv"
+    ):
+        if not src_fpath.is_file():
+            raise FileNotFoundError(src_fpath)
+        with LocalTempFolder(remove_temp_files=True) as temp_dir:
+            temp_fpath = Path(temp_dir) / src_fpath.name
+            if temp_fpath.is_file():
+                raise RuntimeError(f"previous tempfile exist - {temp_fpath=}")
+            shutil.copy(src_fpath, temp_fpath)
+            self.upload_to_gcs_bucket(str(temp_fpath.absolute()), bucket_add_str)
+
 
 def main():
-    db = DatabaseManager()
-    db.get_df_liveschedule()
+    # db = DatabaseManager()
+    # print(db.get_df_liveschedule())
+    test_gcs_upload()
+
+
+def test_gcs_upload(bucket_add_str="test/dummy.csv"):
+    df = pd.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        dirpath = Path(tmpdirname)
+        fpath = dirpath / Path(bucket_add_str).name
+        df.to_csv(fpath)
+        dbm = DatabaseManager()
+        dbm.update_bucket(src_fpath=fpath, bucket_add_str=bucket_add_str)
 
 
 if __name__ == "__main__":
